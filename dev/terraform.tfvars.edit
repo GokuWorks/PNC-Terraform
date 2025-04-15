@@ -1,0 +1,11 @@
+proxuser = ""
+proxpass = ""
+endpoint = "https://{FQDN}/api2/json"
+hostname1 = ""
+hostname2 = ""
+hostname3 = ""
+boxuser = ""
+boxpassword = ""
+ssh_public_keys = <<EOT
+  {PUBLIC KEY HERE}
+EOT
