@@ -137,7 +137,7 @@ resource "proxmox_vm_qemu" "box3" {
   cipassword = var.boxpassword
   sockets = 1
   cores = 3
-  memory = 12288
+  memory = 6144
   sshkeys = var.ssh_public_keys
   vmid = 203
   ipconfig0 = "ip=10.0.16.3/16,gw=10.0.0.1"
