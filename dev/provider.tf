@@ -9,18 +9,6 @@ terraform {
     }
 }
 
-variable "proxuser" {
-  type = string
-}
-
-variable "proxpass" {
-  type = string
-}
-
-variable "endpoint" {
-  type = string
-}
-
 provider "proxmox" {
   pm_user = var.proxuser
   pm_password = var.proxpass
