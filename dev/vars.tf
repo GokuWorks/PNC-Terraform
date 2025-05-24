@@ -43,3 +43,27 @@ variable "ssh_public_key" {
 variable "vm_size" {
     type = list(string)
 }
+
+# k3s vars
+variable "k3sup_version" {
+    type = string
+}
+variable "k3s_version" {
+    type = string
+}
+variable "kube_vip" {
+    type = string
+}
+variable "kube_vip_range" {
+    type = list(string)
+}
+variable "kube_fqdn" {
+    type = string
+}
+variable "kubeconfig_path" {
+    type = string
+}
+variable "ssh_private_key" {
+    type = string
+    sensitive = true
+}

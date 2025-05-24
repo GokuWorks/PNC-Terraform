@@ -29,3 +29,7 @@ terraform.rc
 
 # Ignore env files 
 .env
+
+# Ignore key files
+*.pem
+.ssh_private_key

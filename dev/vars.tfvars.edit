@@ -15,3 +15,16 @@ vm_user = ""
 vm_pass = ""
 ssh_public_key = [ "" ]
 vm_size = [ "", "", "" ]
+
+# k3s vars
+k3sup_version = "0.13.8"
+k3s_version = "v1.33.0+k3s1"
+kubeconfig_path = ""
+kube_vip = ""
+kube_vip_range = [ "", "" ]
+kube_fqdn = ""
+ssh_private_key = <<-EOT
+-----BEGIN OPENSSH PRIVATE KEY-----
+
+-----END OPENSSH PRIVATE KEY-----
+EOT
