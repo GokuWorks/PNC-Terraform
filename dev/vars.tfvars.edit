@@ -1,11 +1,17 @@
-proxuser = ""
-proxpass = ""
-endpoint = "https://{FQDN}/api2/json"
-hostname1 = ""
-hostname2 = ""
-hostname3 = ""
-boxuser = ""
-boxpassword = ""
-ssh_public_keys = <<EOT
-  {PUBLIC KEY HERE}
-EOT
+# Proxmox provider vars
+proxmox_username = ""
+proxmox_password = ""
+proxmox_endpoint = "https://{FQDN}/api2/json"
+
+# VM vars
+hostname = [ "", "", "" ]
+node = [ "", "", "" ]
+vm_id = [ "", "", "" ]
+vm_cores = [ "", "", "" ]
+vm_memory = [ "", "", "" ]
+vm_ipv4 = [ "", "", "" ]
+gateway = ""
+vm_user = ""
+vm_pass = ""
+ssh_public_key = [ "" ]
+vm_size = [ "", "", "" ]
