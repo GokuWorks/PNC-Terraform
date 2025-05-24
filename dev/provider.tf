@@ -3,14 +3,15 @@ terraform {
 
     required_providers {
       proxmox = {
-        source  = "Telmate/proxmox"
-        version = "3.0.1-rc8"       
+        source = "bpg/proxmox"
+        version = "0.77.1"
       }
     }
 }
 
 provider "proxmox" {
-  pm_user = var.proxuser
-  pm_password = var.proxpass
-  pm_api_url = var.endpoint
+  endpoint = var.proxmox_endpoint
+  username = var.proxmox_username
+  password = var.proxmox_password
+  insecure = false
 }

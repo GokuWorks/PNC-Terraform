@@ -1,158 +1,64 @@
-resource "proxmox_vm_qemu" "box1" {
-  target_node = "pve"
-  name = var.hostname1
-  clone_id = 2000
-  os_type = "cloud-init"
-  ciuser = var.boxuser
-  cipassword = var.boxpassword
-  sockets = 1
-  cores = 8
-  memory = 12288
-  sshkeys = var.ssh_public_keys
-  vmid = 201
-  ipconfig0 = "ip=10.0.16.1/16,gw=10.0.0.1"
-  skip_ipv6 = true
-  agent = 1
-  scsihw = "virtio-scsi-single"
-  bootdisk = "scsi0"
-  full_clone = true
-  vm_state = "stopped"
-  
-  disks {
-    ide {
-      ide3 {
-        cloudinit {
-            storage = "local-lvm"
-        }
-      }
-    }
-    scsi {
-      scsi0 {
-        disk {
-          storage = "local-lvm"
-          size = 40
-          emulatessd = true
-          iothread = true
-          replicate = false
-        }
-      }
-    }
-  }
-
-  serial {
-    id   = 0
-    type = "socket"
-  }
-
-  network {
-    id = 0
-    model = "virtio"
-    bridge = "vmbr0"
-  }
+resource "proxmox_virtual_environment_download_file" "ubuntu_cloudimg" {
+  count = length(var.node)
+  content_type = "iso"
+  datastore_id = "local"
+  node_name = var.node[count.index]
+  url = "https://cloud-images.ubuntu.com/releases/oracular/release/ubuntu-24.10-server-cloudimg-amd64.img"
 }
 
-resource "proxmox_vm_qemu" "box2" {
-  target_node = "pve"
-  name = var.hostname2
-  clone_id = 2000
-  os_type = "cloud-init"
-  ciuser = var.boxuser
-  cipassword = var.boxpassword
-  sockets = 1
-  cores = 3
-  memory = 12288
-  sshkeys = var.ssh_public_keys
-  vmid = 202
-  ipconfig0 = "ip=10.0.16.2/16,gw=10.0.0.1"
-  skip_ipv6 = true
-  agent = 1
-  scsihw = "virtio-scsi-single"
-  bootdisk = "scsi0"
-  full_clone = true
-  vm_state = "stopped"
+resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
+  count = length(var.hostname)
+  name = var.hostname[count.index]
+  tags = ["terraform", "k3s"]
+  description = "Managed by Terraform"
+
+  node_name = var.node[count.index]
+  vm_id = var.vm_id[count.index]
+
+  agent {
+    enabled = false
+  }
+
+  stop_on_destroy = true
   
-  disks {
-    ide {
-      ide3 {
-        cloudinit {
-            storage = "local-lvm"
-        }
-      }
+  cpu {
+    cores = var.vm_cores[count.index]
+    type = "x86-64-v2-AES"
+  }
+
+  memory {
+    dedicated = var.vm_memory[count.index]
+  }
+
+  initialization {
+    user_account {
+      username = var.vm_user
+      password = var.vm_pass
+      keys = var.ssh_public_key
     }
-    scsi {
-      scsi0 {
-        disk {
-          storage = "local-lvm"
-          size = 40
-          emulatessd = true
-          iothread = true
-          replicate = false
-        }
+
+    ip_config {
+      ipv4 {
+        address = var.vm_ipv4[count.index]
+        gateway = var.gateway
       }
     }
   }
 
-  serial {
-    id   = 0
-    type = "socket"
-  }
-
-  network {
-    id = 0
-    model = "virtio"
+  network_device {
     bridge = "vmbr0"
   }
-}
 
-resource "proxmox_vm_qemu" "box3" {
-  target_node = "pve"
-  name = var.hostname3
-  clone_id = 2000
-  os_type = "cloud-init"
-  ciuser = var.boxuser
-  cipassword = var.boxpassword
-  sockets = 1
-  cores = 3
-  memory = 6144
-  sshkeys = var.ssh_public_keys
-  vmid = 203
-  ipconfig0 = "ip=10.0.16.3/16,gw=10.0.0.1"
-  skip_ipv6 = true
-  agent = 1
-  scsihw = "virtio-scsi-single"
-  bootdisk = "scsi0"
-  full_clone = true
-  vm_state = "stopped"
-  
-  disks {
-    ide {
-      ide3 {
-        cloudinit {
-            storage = "local-lvm"
-        }
-      }
-    }
-    scsi {
-      scsi0 {
-        disk {
-          storage = "local-lvm"
-          size = 40
-          emulatessd = true
-          iothread = true
-          replicate = false
-        }
-      }
-    }
+  disk {
+    datastore_id = "local-lvm"
+    file_id = "local:iso/ubuntu-24.10-server-cloudimg-amd64.img"
+    interface = "virtio0"
+    iothread = true
+    discard = "on"
+    size = var.vm_size[count.index]
   }
 
-  serial {
-    id   = 0
-    type = "socket"
-  }
-
-  network {
-    id = 0
-    model = "virtio"
-    bridge = "vmbr0"
-  }
+  depends_on = [
+    proxmox_virtual_environment_download_file.ubuntu_cloudimg
+  ]
 }
