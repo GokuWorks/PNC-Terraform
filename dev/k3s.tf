@@ -141,3 +141,17 @@ resource "null_resource" "remote_k3s_node_setup" {
   }
   depends_on = [null_resource.k3s_kube_vip_configmap]
 }
+
+resource "null_resource" "local_configure_kubeconfig" {
+  triggers = {
+    kube_vip = var.kube_vip
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      sed -i "s|https://${split("/", var.vm_ipv4[0])[0]}:6443|https://${var.kube_vip}:6443|g" ${var.kubeconfig_path}
+    EOT
+    
+  }
+  depends_on = [null_resource.remote_k3s_node_setup]
+}
