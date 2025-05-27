@@ -139,7 +139,10 @@ resource "null_resource" "remote_k3s_node_setup" {
     EOT
     
   }
-  depends_on = [null_resource.k3s_kube_vip_configmap]
+  depends_on = [
+    null_resource.k3s_kube_vip_configmap,
+    proxmox_virtual_environment_vm.ubuntu_vm
+    ]
 }
 
 resource "null_resource" "local_configure_kubeconfig" {
