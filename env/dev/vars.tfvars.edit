@@ -28,3 +28,18 @@ ssh_private_key = <<-EOT
 
 -----END OPENSSH PRIVATE KEY-----
 EOT
+
+# Application config vars
+cloudflare_api_token = ""
+cloudflare_fqdn = ""
+cloudflare_email = ""
+
+traefik_dash_fqdn = ""
+
+authentik_fqdn = ""
+auth_secret = "" # openssl rand 40 | base64 -w 0
+auth_pg_pass = "" # openssl rand 40 | base64 -w 0
+
+homepage_fqdn = ""
+
+vaultwarden_fqdn = ""

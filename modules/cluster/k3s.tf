@@ -158,3 +158,14 @@ resource "null_resource" "local_configure_kubeconfig" {
   }
   depends_on = [null_resource.remote_k3s_node_setup]
 }
+
+resource "local_file" "kubeconfig" {
+  filename = var.kubeconfig_path
+  depends_on = [null_resource.local_configure_kubeconfig]
+}
+
+output "kubeconfig_content" {
+  description = "kubeconfig file content"
+  value       = local_file.kubeconfig.content
+  sensitive   = true
+}
