@@ -81,11 +81,13 @@ resource "null_resource" "local_install_k3sup" {
 }
 
 resource "null_resource" "wait_for_ssh" {
+  count = length(var.hostname)
+
   connection {
     type        = "ssh"
     user        = var.vm_user
     private_key = var.ssh_private_key
-    host        = split("/", var.vm_ipv4[0])[0]
+    host        = split("/", var.vm_ipv4[count.index])[0]
     agent       = false
     timeout     = "5m"
   }
@@ -97,7 +99,7 @@ resource "null_resource" "wait_for_ssh" {
   }
 
   depends_on = [
-    proxmox_virtual_environment_vm.ubuntu_vm[0],
+    proxmox_virtual_environment_vm.ubuntu_vm,
     null_resource.local_install_k3sup
   ]
 }
@@ -159,13 +161,8 @@ resource "null_resource" "local_configure_kubeconfig" {
   depends_on = [null_resource.remote_k3s_node_setup]
 }
 
-resource "local_file" "kubeconfig" {
-  filename = var.kubeconfig_path
+output "cluster_ready" {
   depends_on = [null_resource.local_configure_kubeconfig]
-}
-
-output "kubeconfig_content" {
-  description = "kubeconfig file content"
-  value       = local_file.kubeconfig.content
-  sensitive   = true
+  description = "Is cluster ready"
+  value       = true
 }

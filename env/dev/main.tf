@@ -10,7 +10,7 @@ module "cluster" {
   vm_id = var.vm_id
   vm_cores = var.vm_cores
   vm_memory = var.vm_memory
-  vm_ipv4 = var.vm_memory
+  vm_ipv4 = var.vm_ipv4
   gateway = var.gateway
   vm_user = var.vm_user
   vm_pass = var.vm_pass
@@ -28,8 +28,10 @@ module "cluster" {
 
 module "app-deploy" {
   source = "../../modules/app-deploy"
+
+  depends_on = [module.cluster.cluster_ready]
   
-  kubeconfig_path = var.kubeconfig_path
+  kubeconfig_path = var.kubeconfig_path # module.cluster.kubeconfig_path
   kube_vip = var.kube_vip
 
   cloudflare_api_token = var.cloudflare_api_token
