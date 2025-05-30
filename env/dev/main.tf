@@ -25,3 +25,28 @@ module "cluster" {
   kube_fqdn = var.kube_fqdn
   ssh_private_key = var.ssh_private_key
 }
+
+module "app-deploy" {
+  source = "../../modules/app-deploy"
+  
+  kubeconfig_path = var.kubeconfig_path
+  kube_vip = var.kube_vip
+
+  cloudflare_api_token = var.cloudflare_api_token
+  cloudflare_fqdn = var.cloudflare_fqdn
+  cloudflare_email = var.cloudflare_email
+
+  traefik_dash_fqdn = var.traefik_dash_fqdn
+
+  authentik_fqdn = var.authentik_fqdn
+  auth_secret = var.auth_secret # openssl rand 40 | base64 -w 0
+  auth_pg_pass = var.auth_pg_pass # openssl rand 40 | base64 -w 0
+
+  homepage_fqdn = var.homepage_fqdn
+
+  vaultwarden_fqdn = var.vaultwarden_fqdn
+}
+
+# module "app-config" {
+#   source = "../../modules/app-config"  
+# }
