@@ -11,6 +11,11 @@ resource "helm_release" "authentik" {
     <<EOF
 global:
   namespaceOverride: authentik
+  env:
+    - name: AUTHENTIK_BOOTSTRAP_TOKEN
+      value: "${var.authentik_token}"
+    - name: AUTHENTIK_BOOTSTRAP_PASSWORD
+      value: "${var.authentik_pass}"
 
 authentik:
   log_level: info

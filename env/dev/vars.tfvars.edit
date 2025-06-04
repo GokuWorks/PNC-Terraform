@@ -39,6 +39,8 @@ traefik_dash_fqdn = ""
 authentik_fqdn = ""
 auth_secret = "" # openssl rand 40 | base64 -w 0
 auth_pg_pass = "" # openssl rand 40 | base64 -w 0
+authentik_token = ""
+authentik_pass = ""
 
 homepage_fqdn = ""
 

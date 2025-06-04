@@ -31,7 +31,7 @@ module "app-deploy" {
 
   depends_on = [module.cluster.cluster_ready]
   
-  kubeconfig_path = var.kubeconfig_path # module.cluster.kubeconfig_path
+  kubeconfig_path = var.kubeconfig_path
   kube_vip = var.kube_vip
 
   cloudflare_api_token = var.cloudflare_api_token
@@ -43,6 +43,8 @@ module "app-deploy" {
   authentik_fqdn = var.authentik_fqdn
   auth_secret = var.auth_secret # openssl rand 40 | base64 -w 0
   auth_pg_pass = var.auth_pg_pass # openssl rand 40 | base64 -w 0
+  authentik_token = var.authentik_token
+  authentik_pass = var.authentik_pass
 
   homepage_fqdn = var.homepage_fqdn
 
