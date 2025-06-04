@@ -7,6 +7,7 @@ variable "proxmox_username" {
 }
 variable "proxmox_password" {
     type = string
+    sensitive = true
 }
 
 # VM vars
