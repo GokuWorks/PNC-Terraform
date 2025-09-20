@@ -17,8 +17,8 @@ ssh_public_key = [ "" ]
 vm_size = [ "", "", "" ]
 
 # k3s vars
-k3sup_version = "0.13.8"
-k3s_version = "v1.33.0+k3s1"
+k3sup_version = "0.13.11"
+k3s_version = "v1.33.4+k3s1"
 kubeconfig_path = "" # Dont use paths with ~
 kube_vip = ""
 kube_vip_range = [ "", "" ]
