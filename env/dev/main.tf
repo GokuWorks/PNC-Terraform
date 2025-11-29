@@ -34,23 +34,7 @@ module "app-deploy" {
   kubeconfig_path = var.kubeconfig_path
   kube_vip = var.kube_vip
 
-  cloudflare_api_token = var.cloudflare_api_token
-  cloudflare_fqdn = var.cloudflare_fqdn
-  cloudflare_email = var.cloudflare_email
-
-  traefik_dash_fqdn = var.traefik_dash_fqdn
-
-  authentik_fqdn = var.authentik_fqdn
-  auth_secret = var.auth_secret # openssl rand 40 | base64 -w 0
-  auth_pg_pass = var.auth_pg_pass # openssl rand 40 | base64 -w 0
-  authentik_token = var.authentik_token
-  authentik_pass = var.authentik_pass
-
-  homepage_fqdn = var.homepage_fqdn
-
-  vaultwarden_fqdn = var.vaultwarden_fqdn
+  argocd_fqdn = var.argocd_fqdn
+  apps_user = var.apps_user
+  apps_token = var.apps_token
 }
-
-# module "app-config" {
-#   source = "../../modules/app-config"  
-# }
