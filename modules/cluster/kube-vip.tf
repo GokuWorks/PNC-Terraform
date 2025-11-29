@@ -76,9 +76,6 @@ resource "null_resource" "k3s_kube_vip_manifests" {
                   requiredDuringSchedulingIgnoredDuringExecution:
                     nodeSelectorTerms:
                     - matchExpressions:
-                      - key: node-role.kubernetes.io/master
-                        operator: Exists
-                    - matchExpressions:
                       - key: node-role.kubernetes.io/control-plane
                         operator: Exists
               containers:
