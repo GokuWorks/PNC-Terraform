@@ -25,16 +25,3 @@ module "cluster" {
   kube_fqdn = var.kube_fqdn
   ssh_private_key = var.ssh_private_key
 }
-
-module "app-deploy" {
-  source = "../../modules/app-deploy"
-
-  depends_on = [module.cluster.cluster_ready]
-  
-  kubeconfig_path = var.kubeconfig_path
-  kube_vip = var.kube_vip
-
-  argocd_fqdn = var.argocd_fqdn
-  apps_user = var.apps_user
-  apps_token = var.apps_token
-}

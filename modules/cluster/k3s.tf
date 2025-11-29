@@ -99,7 +99,7 @@ resource "null_resource" "wait_for_ssh" {
   }
 
   depends_on = [
-    proxmox_virtual_environment_vm.ubuntu_vm,
+    proxmox_virtual_environment_vm.vm,
     null_resource.local_install_k3sup
   ]
 }
@@ -116,7 +116,8 @@ resource "null_resource" "remote_k3s_master_setup" {
         --tls-san ${var.kube_vip} \
         --tls-san ${var.kube_fqdn} \
         --user ${var.vm_user} \
-        --ssh-key ${path.cwd}/.ssh_private_key
+        --ssh-key ${path.cwd}/.ssh_private_key \
+        --k3s-extra-args '--node-taint node-role.kubernetes.io/control-plane=true:NoSchedule'
     EOT
     
   }
@@ -137,13 +138,14 @@ resource "null_resource" "remote_k3s_node_setup" {
         --tls-san ${var.kube_vip} \
         --tls-san ${var.kube_fqdn} \
         --user ${var.vm_user} \
-        --ssh-key ${path.cwd}/.ssh_private_key
+        --ssh-key ${path.cwd}/.ssh_private_key \
+        --k3s-extra-args '--node-taint node-role.kubernetes.io/control-plane=true:NoSchedule'
     EOT
     
   }
   depends_on = [
     null_resource.k3s_kube_vip_configmap,
-    proxmox_virtual_environment_vm.ubuntu_vm
+    proxmox_virtual_environment_vm.vm
     ]
 }
 
