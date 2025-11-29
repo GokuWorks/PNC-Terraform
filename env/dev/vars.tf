@@ -68,16 +68,3 @@ variable "ssh_private_key" {
     type = string
     sensitive = true
 }
-
-# Application config vars
-variable "argocd_fqdn" {
-    type = string
-}
-
-variable "apps_user" {
-    type = string
-}
-
-variable "apps_token" {
-    type = string
-}
