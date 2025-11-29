@@ -1,12 +1,12 @@
-resource "proxmox_virtual_environment_download_file" "ubuntu_cloudimg" {
+resource "proxmox_virtual_environment_download_file" "cloudimg" {
   count = length(var.node)
   content_type = "iso"
   datastore_id = "local"
   node_name = var.node[count.index]
-  url = "https://cloud-images.ubuntu.com/releases/plucky/release/ubuntu-25.04-server-cloudimg-amd64.img" # "https://cloud-images.ubuntu.com/releases/oracular/release/ubuntu-24.10-server-cloudimg-amd64.img"
+  url = "https://cloud-images.ubuntu.com/releases/questing/release/ubuntu-25.10-server-cloudimg-amd64.img" # "https://cloud-images.ubuntu.com/releases/plucky/release/ubuntu-25.04-server-cloudimg-amd64.img"
 }
 
-resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
+resource "proxmox_virtual_environment_vm" "vm" {
   count = length(var.hostname)
   name = var.hostname[count.index]
   tags = ["terraform", "k3s"]
@@ -51,7 +51,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id = "local:iso/ubuntu-25.04-server-cloudimg-amd64.img"
+    file_id = proxmox_virtual_environment_download_file.cloudimg[count.index].id
     interface = "virtio0"
     iothread = true
     discard = "on"
@@ -59,6 +59,6 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   }
 
   depends_on = [
-    proxmox_virtual_environment_download_file.ubuntu_cloudimg
+    proxmox_virtual_environment_download_file.cloudimg
   ]
 }
