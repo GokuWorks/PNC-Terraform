@@ -116,7 +116,8 @@ resource "null_resource" "remote_k3s_master_setup" {
         --tls-san ${var.kube_vip} \
         --tls-san ${var.kube_fqdn} \
         --user ${var.vm_user} \
-        --ssh-key ${path.cwd}/.ssh_private_key
+        --ssh-key ${path.cwd}/.ssh_private_key \
+        --k3s-extra-args '--node-taint node-role.kubernetes.io/control-plane=true:NoSchedule'
     EOT
     
   }
@@ -137,7 +138,8 @@ resource "null_resource" "remote_k3s_node_setup" {
         --tls-san ${var.kube_vip} \
         --tls-san ${var.kube_fqdn} \
         --user ${var.vm_user} \
-        --ssh-key ${path.cwd}/.ssh_private_key
+        --ssh-key ${path.cwd}/.ssh_private_key \
+        --k3s-extra-args '--node-taint node-role.kubernetes.io/control-plane=true:NoSchedule'
     EOT
     
   }
