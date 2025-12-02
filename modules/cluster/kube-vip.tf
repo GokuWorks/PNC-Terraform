@@ -128,8 +128,58 @@ resource "null_resource" "k3s_kube_vip_manifests" {
           updateStrategy: {}
         EOF_MANIFEST
 
+        cat <<EOF_MANIFEST | sudo tee /var/lib/rancher/k3s/server/manifests/kube-vip-cloud-controller.yaml > /dev/null
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: kube-vip-cloud-provider
+          namespace: kube-system
+        spec:
+          replicas: 1
+          revisionHistoryLimit: 10
+          selector:
+            matchLabels:
+              app: kube-vip
+              component: kube-vip-cloud-provider
+          strategy:
+            rollingUpdate:
+              maxSurge: 25%
+              maxUnavailable: 25%
+            type: RollingUpdate
+          template:
+            metadata:
+              labels:
+                app: kube-vip
+                component: kube-vip-cloud-provider
+            spec:
+              containers:
+              - command:
+                - /kube-vip-cloud-provider
+                - --leader-elect-resource-name=kube-vip-cloud-controller
+                image: ghcr.io/kube-vip/kube-vip-cloud-provider:v0.0.12
+                name: kube-vip-cloud-provider
+                imagePullPolicy: Always
+              dnsPolicy: ClusterFirst
+              restartPolicy: Always
+              terminationGracePeriodSeconds: 30
+              serviceAccountName: kube-vip-cloud-controller
+              tolerations:
+              - key: "node-role.kubernetes.io/control-plane"
+                operator: "Exists"
+                effect: "NoSchedule"
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                          - key: "node-role.kubernetes.io/control-plane"
+                            operator: "In"
+                            values:
+                              - "true"
+        EOF_MANIFEST
+
         sudo kubectl apply -f /var/lib/rancher/k3s/server/manifests/kube-vip-manifest.yaml
-        sudo kubectl apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
+        sudo kubectl apply -f /var/lib/rancher/k3s/server/manifests/kube-vip-cloud-controller.yaml
       EOT
     ]
   }
