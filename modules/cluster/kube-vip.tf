@@ -129,6 +129,42 @@ resource "null_resource" "k3s_kube_vip_manifests" {
         EOF_MANIFEST
 
         cat <<EOF_MANIFEST | sudo tee /var/lib/rancher/k3s/server/manifests/kube-vip-cloud-controller.yaml > /dev/null
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: kube-vip-cloud-controller
+          namespace: kube-system
+        ---
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          annotations:
+            rbac.authorization.kubernetes.io/autoupdate: "true"
+          name: system:kube-vip-cloud-controller-role
+        rules:
+          - apiGroups: ["coordination.k8s.io"]
+            resources: ["leases"]
+            verbs: ["get", "create", "update", "list", "put"]
+          - apiGroups: [""]
+            resources: ["configmaps", "endpoints","events","services/status", "leases"]
+            verbs: ["*"]
+          - apiGroups: [""]
+            resources: ["nodes", "services"]
+            verbs: ["list","get","watch","update"]
+        ---
+        kind: ClusterRoleBinding
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: system:kube-vip-cloud-controller-binding
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: system:kube-vip-cloud-controller-role
+        subjects:
+        - kind: ServiceAccount
+          name: kube-vip-cloud-controller
+          namespace: kube-system
+        ---
         apiVersion: apps/v1
         kind: Deployment
         metadata:
